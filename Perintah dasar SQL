@@ -2,4 +2,4 @@
 2. C:\>cd /xampp/mysql/bin
 3. C:\>mysql -u root -p
 4. Jika masukkan password enter saja
-5. MariaDB [<none>]>
+5. MariaDB [<none>]> show Databases;
