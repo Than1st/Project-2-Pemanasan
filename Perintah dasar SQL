@@ -1,0 +1,5 @@
+1. C:\users\administrator> cd /
+2. C:\>cd /xampp/mysql/bin
+3. C:\>mysql -u root -p
+4. Jika masukkan password enter saja
+5. MariaDB [<none>]>
