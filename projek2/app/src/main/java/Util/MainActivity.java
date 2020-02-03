@@ -2,6 +2,7 @@ package Util;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -68,6 +69,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     String tag_json_obj = "json_obj_req";
 
+    public void pindahactivity(View v){
+        Intent i = new Intent(MainActivity.this, Main2Activity.class);
+        startActivity(i);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,13 +103,15 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                    }
         );
 
+
+
         // fungsi floating action button memanggil form biodata
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DialogForm("", "", "SIMPAN");
-            }
-        });
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                DialogForm("", "", "SIMPAN");
+//            }
+//        });
 
         // listview ditekan lama akan menampilkan dua pilihan edit atau delete data
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -157,48 +164,48 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     // untuk menampilkan dialog from biodata
-    private void DialogForm(String nimx, String namax, String button) {
-        dialog = new AlertDialog.Builder(MainActivity.this);
-        inflater = getLayoutInflater();
-        dialogView = inflater.inflate(R.layout.add_biodata, null);
-        dialog.setView(dialogView);
-        dialog.setCancelable(true);
-        dialog.setIcon(R.drawable.ic_people_black_24dp);
-        dialog.setTitle("Form Calas");
-
-        txt_nim      = (EditText) dialogView.findViewById(R.id.txt_nim);
-        txt_nama    = (EditText) dialogView.findViewById(R.id.txt_nama);
-
-        if (!nimx.isEmpty()){
-            txt_nim.setText(nimx);
-            txt_nama.setText(namax);
-        } else {
-            kosong();
-        }
-
-        dialog.setPositiveButton(button, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                nim     = txt_nim.getText().toString();
-                nama    = txt_nama.getText().toString();
-
-                simpan_update();
-                dialog.dismiss();
-            }
-        });
-
-        dialog.setNegativeButton("BATAL", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                kosong();
-            }
-        });
-
-        dialog.show();
-    }
+//    private void DialogForm(String nimx, String namax, String button) {
+//        dialog = new AlertDialog.Builder(MainActivity.this);
+//        inflater = getLayoutInflater();
+//        dialogView = inflater.inflate(R.layout.add_biodata, null);
+//        dialog.setView(dialogView);
+//        dialog.setCancelable(true);
+//        dialog.setIcon(R.drawable.ic_people_black_24dp);
+//        dialog.setTitle("Form Calas");
+//
+//        txt_nim      = (EditText) dialogView.findViewById(R.id.txt_nim);
+//        txt_nama    = (EditText) dialogView.findViewById(R.id.txt_nama);
+//
+//        if (!nimx.isEmpty()){
+//            txt_nim.setText(nimx);
+//            txt_nama.setText(namax);
+//        } else {
+//            kosong();
+//        }
+//
+//        dialog.setPositiveButton(button, new DialogInterface.OnClickListener() {
+//
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                nim     = txt_nim.getText().toString();
+//                nama    = txt_nama.getText().toString();
+//
+//                simpan_update();
+//                dialog.dismiss();
+//            }
+//        });
+//
+//        dialog.setNegativeButton("BATAL", new DialogInterface.OnClickListener() {
+//
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//                kosong();
+//            }
+//        });
+//
+//        dialog.show();
+//    }
 
     // untuk menampilkan semua data pada listview
     private void callVolley(){
@@ -333,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                         String nimx      = jObj.getString(TAG_NIM);
                         String namax    = jObj.getString(TAG_NAMA);
 
-                        DialogForm(nimx, namax, "UPDATE");
+//                        DialogForm(nimx, namax, "UPDATE");
 
                         ((BaseAdapter)adapter).notifyDataSetChanged();
 
