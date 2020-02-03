@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">projek2</string>
+    <string name="L">Laki Laki</string>
+    <string name="P">Perempuan</string>
+    <string-array name="agama">
+        <item>Islam</item>
+        <item>Kristen</item>
+        <item>Hindu</item>
+        <item>Budha</item>
+        <item>Konghucu</item>
+    </string-array>
+</resources>
