@@ -50,11 +50,15 @@ public class Adapter extends BaseAdapter {
 
         TextView nim = (TextView) convertView.findViewById(R.id.nim);
         TextView nama = (TextView) convertView.findViewById(R.id.nama);
+        TextView alamat = (TextView) convertView.findViewById(R.id.alamat);
+        TextView email = (TextView) convertView.findViewById(R.id.email);
 
         Data data = items.get(position);
 
         nim.setText(data.getNim());
         nama.setText(data.getNama());
+        alamat.setText(data.getAlamat());
+        email.setText(data.getEmail());
 
         return convertView;
     }

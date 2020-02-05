@@ -2,7 +2,6 @@ package Util;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +12,8 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import app.AppController;
+import butterknife.BindView;
 import data.Data;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -51,8 +53,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     AlertDialog.Builder dialog;
     LayoutInflater inflater;
     View dialogView;
-    EditText txt_nim, txt_nama;
-    String nim, nama;
+    EditText txt_nim, txt_nama, txt_alamat, txt_email;
+    String nim, nama, jk, alamat, email;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -64,15 +66,21 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     public static final String TAG_NIM      = "nim";
     public static final String TAG_NAMA     = "nama";
+    public static final String TAG_JK       = "jk";
+    public static final String TAG_ALAMAT   = "alamat";
+    public static final String TAG_EMAIL    = "email";
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_MESSAGE = "message";
 
     String tag_json_obj = "json_obj_req";
 
-    public void pindahactivity(View v){
-        Intent i = new Intent(MainActivity.this, Main2Activity.class);
-        startActivity(i);
-    }
+    @BindView(R.id.jenis)
+    RadioGroup jenis;
+    @BindView(R.id.laki)
+    RadioButton laki;
+    @BindView(R.id.perem)
+    RadioButton perem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,12 +114,12 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
 
         // fungsi floating action button memanggil form biodata
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                DialogForm("", "", "SIMPAN");
-//            }
-//        });
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TambahForm("", "", "", "","SIMPAN");
+            }
+        });
 
         // listview ditekan lama akan menampilkan dua pilihan edit atau delete data
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -159,53 +167,218 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     // untuk mengosongi edittext pada form
     private void kosong(){
-        txt_nim.setText(null);
-        txt_nama.setText(null);
+        txt_nim.setText("");
+        txt_nama.setText("");
+        txt_alamat.setText("");
+        txt_email.setText("");
     }
 
-    // untuk menampilkan dialog from biodata
-//    private void DialogForm(String nimx, String namax, String button) {
-//        dialog = new AlertDialog.Builder(MainActivity.this);
-//        inflater = getLayoutInflater();
-//        dialogView = inflater.inflate(R.layout.add_biodata, null);
-//        dialog.setView(dialogView);
-//        dialog.setCancelable(true);
-//        dialog.setIcon(R.drawable.ic_people_black_24dp);
-//        dialog.setTitle("Form Calas");
-//
-//        txt_nim      = (EditText) dialogView.findViewById(R.id.txt_nim);
-//        txt_nama    = (EditText) dialogView.findViewById(R.id.txt_nama);
-//
-//        if (!nimx.isEmpty()){
-//            txt_nim.setText(nimx);
-//            txt_nama.setText(namax);
-//        } else {
-//            kosong();
-//        }
-//
-//        dialog.setPositiveButton(button, new DialogInterface.OnClickListener() {
-//
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                nim     = txt_nim.getText().toString();
-//                nama    = txt_nama.getText().toString();
-//
-//                simpan_update();
-//                dialog.dismiss();
-//            }
-//        });
-//
-//        dialog.setNegativeButton("BATAL", new DialogInterface.OnClickListener() {
-//
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//                kosong();
-//            }
-//        });
-//
-//        dialog.show();
-//    }
+    //tambah data
+    private void TambahForm(String nimx, String namax, String alamatx, String emailx, String button) {
+        dialog = new AlertDialog.Builder(MainActivity.this);
+        inflater = getLayoutInflater();
+        dialogView = inflater.inflate(R.layout.add_biodata, null);
+        dialog.setView(dialogView);
+        dialog.setCancelable(true);
+
+        txt_nim      = (EditText) dialogView.findViewById(R.id.txt_nim);
+        txt_nama     = (EditText) dialogView.findViewById(R.id.txt_nama);
+        txt_alamat   = (EditText) dialogView.findViewById(R.id.txt_alamat);
+        txt_email    = (EditText) dialogView.findViewById(R.id.txt_email);
+
+            txt_nim.setText(nimx);
+            txt_nama.setText(namax);
+            txt_alamat.setText(alamatx);
+            txt_email.setText(emailx);
+
+        dialog.setPositiveButton(button, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                nim     = txt_nim.getText().toString();
+                nama    = txt_nama.getText().toString();
+                alamat  = txt_alamat.getText().toString();
+                email   = txt_email.getText().toString();
+
+                tambah_data();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setNegativeButton("BATAL", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                kosong();
+            }
+        });
+
+        dialog.show();
+    }
+    private void tambah_data() {
+        String url;
+            url = url_insert;
+
+        StringRequest strReq = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Response: " + response.toString());
+
+                try {
+                    JSONObject jObj = new JSONObject(response);
+                    success = jObj.getInt(TAG_SUCCESS);
+
+                    // Cek error node pada json
+                    if (success == 1) {
+                        Log.d("Add", jObj.toString());
+
+                        callVolley();
+                        kosong();
+
+                        Toast.makeText(MainActivity.this, jObj.getString(TAG_MESSAGE), Toast.LENGTH_LONG).show();
+                        ((BaseAdapter)adapter).notifyDataSetChanged();
+
+                    } else {
+                        Toast.makeText(MainActivity.this, jObj.getString(TAG_MESSAGE), Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    // JSON error
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Error: " + error.getMessage());
+                Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters ke post url
+                Map<String, String> params = new HashMap<String, String>();
+                    params.put("nim", nim);
+                    params.put("nama", nama);
+//                int selectedId = jenis.getCheckedRadioButtonId();
+//                if (selectedId == laki.getId()){
+//                    params.put("laki", laki.getText().toString());
+//                }else{
+//                    params.put("perem", perem.getText().toString());
+//                }
+                    params.put("alamat", alamat);
+                    params.put("email", email);
+                return params;
+            }
+
+        };
+
+        AppController.getInstance().addToRequestQueue(strReq, tag_json_obj);
+    }
+
+
+    // Edit Data
+    private void EditForm(String nimx, String namax, String button) {
+        dialog = new AlertDialog.Builder(MainActivity.this);
+        inflater = getLayoutInflater();
+        dialogView = inflater.inflate(R.layout.edit_bio, null);
+        dialog.setView(dialogView);
+        dialog.setCancelable(true);
+
+        txt_nim      = (EditText) dialogView.findViewById(R.id.txt_nim);
+        txt_nama    = (EditText) dialogView.findViewById(R.id.txt_nama);
+
+        if (!nimx.isEmpty()){
+            txt_nim.setText(nimx);
+            txt_nama.setText(namax);
+        } else {
+            kosong();
+        }
+
+        dialog.setPositiveButton(button, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                nim     = txt_nim.getText().toString();
+                nama    = txt_nama.getText().toString();
+
+                update();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setNegativeButton("BATAL", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                kosong();
+            }
+        });
+
+        dialog.show();
+    }
+    private void update() {
+        String url;
+        // jika id kosong maka simpan, jika id ada nilainya maka update
+            url = url_update;
+
+        StringRequest strReq = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Response: " + response.toString());
+
+                try {
+                    JSONObject jObj = new JSONObject(response);
+                    success = jObj.getInt(TAG_SUCCESS);
+
+                    // Cek error node pada json
+                    if (success == 1) {
+                        Log.d("update", jObj.toString());
+
+                        callVolley();
+                        kosong();
+
+                        Toast.makeText(MainActivity.this, jObj.getString(TAG_MESSAGE), Toast.LENGTH_LONG).show();
+                        ((BaseAdapter)adapter).notifyDataSetChanged();
+
+                    } else {
+                        Toast.makeText(MainActivity.this, jObj.getString(TAG_MESSAGE), Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    // JSON error
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Error: " + error.getMessage());
+                Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters ke post url
+                Map<String, String> params = new HashMap<String, String>();
+                // jika id kosong maka simpan, jika id ada nilainya maka update
+                    params.put("nama", nama);
+
+                return params;
+            }
+
+        };
+
+        AppController.getInstance().addToRequestQueue(strReq, tag_json_obj);
+    }
 
     // untuk menampilkan semua data pada listview
     private void callVolley(){
@@ -228,6 +401,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
                         item.setNim(obj.getString(TAG_NIM));
                         item.setNama(obj.getString(TAG_NAMA));
+                        item.setAlamat(obj.getString(TAG_ALAMAT));
+                        item.setEmail(obj.getString(TAG_EMAIL));
+
 
                         // menambah item ke array
                         itemList.add(item);
@@ -340,7 +516,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                         String nimx      = jObj.getString(TAG_NIM);
                         String namax    = jObj.getString(TAG_NAMA);
 
-//                        DialogForm(nimx, namax, "UPDATE");
+                        EditForm(nimx, namax, "UPDATE");
 
                         ((BaseAdapter)adapter).notifyDataSetChanged();
 
