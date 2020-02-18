@@ -31,3 +31,6 @@ FROM nilai
  ORDER BY nilai.nilai
 
 Search
+SELECT * FROM tabel WHERE field LIKE 'value%';
+SELECT * FROM tabel WHERE field LIKE '%value';
+SELECT * FROM tabel WHERE field LIKE '%value%'; 
