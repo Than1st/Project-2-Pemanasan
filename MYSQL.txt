@@ -1,0 +1,33 @@
+DDL
+Create	
+Database	: CREATE DATABASE contoh;
+Tabel		: CREATE TABLE tabel (field tipedata(length) primary key not null, field tipedata		  (length));
+
+
+Drop
+Database	: DROP contoh;
+Tabel		: DROP TABLE tabel;
+
+
+Alter
+Table		: ALTER TABLE contoh to example; //ganti nama
+
+
+DML
+
+Select		: SELECT * FROM tabel;
+Insert		: INSERT INTO tabel (field,....,field) VALUES ("value_sesuai_field",......,"value_sesuai_field");
+		: INSERT INTO tabel ("value_sesuai_field",...,"value_sesuai_field");
+Update		: UPDATE tabel set nama="Sulthan Laksono Ramadhan" WHERE nim="1911500641";
+Delete		: DELETE FROM tabel WHERE nim="1911500641";
+
+Join
+SELECT mahasiswa.nama,
+       matkul.nama_matkul,
+       nilai.nilai
+FROM nilai
+ INNER JOIN mahasiswa ON mahasiswa.nim = nilai.fk_nim
+ INNER JOIN matkul ON matkul.kd_matkul = nilai.fk_kd_mk
+ ORDER BY nilai.nilai
+
+Search
